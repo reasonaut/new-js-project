@@ -74,6 +74,20 @@ echo "{
 echo "node_modules
 dist" > .prettierignore
 npm install --save-dev eslint-config-prettier
-# Then, add "prettier" to the "extends" array in your .eslintrc.* file. Make sure to put it last, so it gets the chance to override other configs.
-# Rebuild webpack (add "build": "webpack") to package.json scripts object
-
+# step 6: use node to add prettier to the extends array of .eslintrc.json
+node > out_.eslintrc.json <<EOF
+var config = require('./.eslintrc.json');
+config['extends'].push("prettier");
+console.log(JSON.stringify(config));
+EOF
+cp out_.eslintrc.json .eslintrc.json
+rm out_.eslintrc.json
+# step 7: add "build": "webpack" to package.json scripts object
+node > out_package.json <<EOF
+var config = require('./package.json');
+config['scripts']['build'] = 'webpack';
+console.log(JSON.stringify(config));
+EOF
+cp out_package.json package.json
+rm out_package.json
+npm run build
